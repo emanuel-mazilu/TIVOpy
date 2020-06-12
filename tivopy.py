@@ -218,6 +218,8 @@ class VideoPlayer(QWidget):
             self.handleFullscreen()
 
     def handleFullscreen(self):
+        # BUG: Causes video to go fullscreen and exit fullscreen
+        # when closing the open file window
         if self.windowState() and Qt.WindowFullScreen:
             self.showNormal()
         else:
