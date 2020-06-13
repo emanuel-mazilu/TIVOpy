@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 import os
 import sys
@@ -399,7 +399,8 @@ if __name__ == '__main__':
     player.setAcceptDrops(True)
     player.setWindowTitle("TIVOpy")
     player.setWindowIcon(QIcon.fromTheme("multimedia-video-player"))
-    player.setGeometry(100, 300, 1366, 768)
+    # player.setGeometry(100, 300, 1366, 768)
+    player.setGeometry(50, 50, 640, 480)
     player.setContextMenuPolicy(Qt.CustomContextMenu)
     player.customContextMenuRequested[QPoint].connect(player.contextMenuRequested)
     player.show()
