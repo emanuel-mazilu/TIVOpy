@@ -11,6 +11,7 @@ Pyqt5
 ### Windows:
 K-Lite codec pack
 enable http and https streming codecs
+https://codecguide.com/download_k-lite_codec_pack_full.htm
 
 ### Linux:
 Gstreamer1.0-plugins
