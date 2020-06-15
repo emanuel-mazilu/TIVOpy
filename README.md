@@ -6,11 +6,11 @@ QT5 - Video/Streaming Player
 
 Pyqt5
 
-```pip install pyqt```
+```pip install pyqt5```
 
 ### Windows:
 K-Lite codec pack
 enable http and https streming codecs
 
 ### Linux:
-Gstreamer
+Gstreamer1.0-plugins
