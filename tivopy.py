@@ -64,16 +64,16 @@ class VideoPlayer(QWidget):
         self.myurl = ""
 
         # channel list
-        self.channels_list = QListView(self)
-        self.channels_list.setMinimumSize(QSize(150, 0))
-        self.channels_list.setMaximumSize(QSize(150, 4000))
-        self.channels_list.setFrameShape(QFrame.Box)
-        self.channels_list.setObjectName("channels_list")
-        self.channels_list.setStyleSheet("background-color: black; color: #585858;")
-        self.channels_list.setFocus()
+        self.channelList = QListView(self)
+        self.channelList.setMinimumSize(QSize(150, 0))
+        self.channelList.setMaximumSize(QSize(150, 4000))
+        self.channelList.setFrameShape(QFrame.Box)
+        self.channelList.setObjectName("channelList")
+        self.channelList.setStyleSheet("background-color: black; color: #585858;")
+        self.channelList.setFocus()
         # for adding items to list must create a model
         self.model = QStandardItemModel()
-        self.channels_list.setModel(self.model)
+        self.channelList.setModel(self.model)
 
         controlLayout = QHBoxLayout()
         controlLayout.setContentsMargins(5, 0, 5, 0)
@@ -92,7 +92,7 @@ class VideoPlayer(QWidget):
         
         # adds channels list to the right
         self.mainLayout.addLayout(layout)
-        self.mainLayout.addWidget(self.channels_list)
+        self.mainLayout.addWidget(self.channelList)
 
         self.setLayout(self.mainLayout)
 
@@ -127,9 +127,9 @@ class VideoPlayer(QWidget):
         self.mediaPlayer.durationChanged.connect(self.durationChanged)
         self.mediaPlayer.error.connect(self.handleError)
 
-        self.populate_channel_list()
-        self.channel_select()
-        self.initial_play()
+        self.populateChannelList()
+        self.selectChannel()
+        self.initialPlay()
 
     def playFromURL(self):
         self.mediaPlayer.pause()
@@ -238,19 +238,19 @@ class VideoPlayer(QWidget):
             self.showSlider()
 
     def hideSlider(self):
-        self.channels_list.hide()
+        self.channelList.hide()
         self.playButton.hide()
         self.lbl.hide()
         self.positionSlider.hide()
         self.elbl.hide()
 
     def showSlider(self):
-        self.channels_list.show()
+        self.channelList.show()
         self.playButton.show()
         self.lbl.show()
         self.positionSlider.show()
         self.elbl.show()
-        self.channels_list.setFocus()
+        self.channelList.setFocus()
 
     def forwardSlider(self):
         self.mediaPlayer.setPosition(self.mediaPlayer.position() + 1000 * 60)
@@ -296,38 +296,37 @@ class VideoPlayer(QWidget):
         self.playButton.setEnabled(True)
         self.mediaPlayer.play()
 
-
-    def populate_channel_list(self):
+    def populateChannelList(self):
         # file must be in same directory as the script
         FILEPATH = os.path.join(os.path.dirname(os.path.realpath(__file__)), "canaletv.txt")
         # lines from file with "channel name" -- "link"
-        channel_array = []
+        channelArray = []
         # split file by line and adding it to the array
         with open(FILEPATH) as f:
             for line in f:
-                channel_array.append(line.rstrip())
+                channelArray.append(line.rstrip())
         # dictionary with key = channel name and value = link
-        self.channel_dict = dict(ch.split(" -- ") for ch in channel_array)
-        for channel in self.channel_dict.keys():
+        self.channelDict = dict(ch.split(" -- ") for ch in channelArray)
+        for channel in self.channelDict.keys():
             item = QStandardItem(channel)
             self.model.appendRow(item)
 
+    def selectedItemBehavior(self, index):
     # gets the link for the selected channel and plays it
-    def selected_behavior(self, index):
-        itms = self.channels_list.selectedIndexes()
+        itms = self.channelList.selectedIndexes()
         for it in itms:
             channel = it.data()
-            link = self.channel_dict[channel]
+            link = self.channelDict[channel]
             self.mediaPlayer.setMedia(QMediaContent(QUrl(link)))
             self.play()
 
-    # selecting channel from sidebar calls selected_behavior
-    def channel_select(self):
-        self.selModel = self.channels_list.selectionModel()
-        self.selModel.selectionChanged.connect(self.selected_behavior)
+    def selectChannel(self):
+    # selecting channel from sidebar calls selectedItemBehavior
+        self.selModel = self.channelList.selectionModel()
+        self.selModel.selectionChanged.connect(self.selectedItemBehavior)
 
+    def initialPlay(self):
     # play somenting when app opens
-    def initial_play(self):
         self.mediaPlayer.setMedia(QMediaContent(QUrl("https://vid.hls.protv.ro/proxhdn/proxhd_3_34/index.m3u8?1")))
         self.play()
 
