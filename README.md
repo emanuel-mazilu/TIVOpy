@@ -1,5 +1,6 @@
 # TIVOpy
 QT5 - Video/Streaming Player
+![alt text](https://github.com/emanuel-mazilu/TIVOpy/blob/master/TIVOpy.png)
 
 
 ## Requrements
