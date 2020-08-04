@@ -105,8 +105,6 @@ class VideoPlayer(QWidget):
         self.shortcut.activated.connect(self.handleQuit)
         self.shortcut = QShortcut(QKeySequence("u"), self)
         self.shortcut.activated.connect(self.playFromURL)
-        self.shortcut = QShortcut(QKeySequence("o"), self)
-        self.shortcut.activated.connect(self.openFile)
         QShortcut(QKeySequence(Qt.Key_Space), self.videoWidget, self.play)
         QShortcut(QKeySequence(Qt.Key_F), self.videoWidget, self.handleFullscreen)
         QShortcut(QKeySequence(Qt.Key_Escape), self.videoWidget, self.exitFullscreen)
@@ -147,11 +145,6 @@ class VideoPlayer(QWidget):
         self.clip.setText(self.myurl)
         self.playFromURL()
 
-    def openFile(self):
-        fileName, _ = QFileDialog.getOpenFileName(self, "Open Movie",
-                                                  QDir.homePath() + "/Videos",
-                                                  "Media (*.webm *.mp4 *.ts *.avi *.mpeg *.mpg *.mkv *.VOB *.m4v *.3gp *.mp3 *.m4a *.wav *.ogg *.flac *.m3u *.m3u8)")
-
     def play(self):
         if self.mediaPlayer.state() == QMediaPlayer.PlayingState:
             self.mediaPlayer.pause()
@@ -189,8 +182,6 @@ class VideoPlayer(QWidget):
 
     def contextMenuRequested(self, point):
         menu = QMenu()
-        actionFile = menu.addAction(QIcon.fromTheme("video-x-generic"), "Open File (o)")
-        actionclipboard = menu.addSeparator()
         actionURL = menu.addAction(QIcon.fromTheme("browser"), "URL from Clipboard (u)")
         actionclipboard = menu.addSeparator()
         actionToggle = menu.addAction(QIcon.fromTheme("next"), "Show / Hide Channels (s)")
@@ -200,7 +191,6 @@ class VideoPlayer(QWidget):
         action5 = menu.addSeparator()
         actionQuit = menu.addAction(QIcon.fromTheme("application-exit"), "Exit (q)")
 
-        actionFile.triggered.connect(self.openFile)
         actionQuit.triggered.connect(self.handleQuit)
         actionFull.triggered.connect(self.handleFullscreen)
         actionInfo.triggered.connect(self.handleInfo)
@@ -218,8 +208,6 @@ class VideoPlayer(QWidget):
             self.handleFullscreen()
 
     def handleFullscreen(self):
-        # BUG: Causes video to go fullscreen and exit fullscreen
-        # when closing the open file window
         if self.windowState() and Qt.WindowFullScreen:
             self.showNormal()
         else:
