@@ -75,23 +75,23 @@ class VideoPlayer(QWidget):
         self.model = QStandardItemModel()
         self.channelList.setModel(self.model)
 
-        controlLayout = QHBoxLayout()
-        controlLayout.setContentsMargins(5, 0, 5, 0)
-        controlLayout.addWidget(self.playButton)
-        controlLayout.addWidget(self.lbl)
-        controlLayout.addWidget(self.positionSlider)
-        controlLayout.addWidget(self.elbl)
+        self.controlLayout = QHBoxLayout()
+        self.controlLayout.setContentsMargins(5, 0, 5, 0)
+        self.controlLayout.addWidget(self.playButton)
+        self.controlLayout.addWidget(self.lbl)
+        self.controlLayout.addWidget(self.positionSlider)
+        self.controlLayout.addWidget(self.elbl)
 
         self.mainLayout = QHBoxLayout()
 
         # contains video and cotrol widgets to the left side
-        layout = QVBoxLayout()
-        layout.setContentsMargins(0, 0, 0, 0)
-        layout.addWidget(self.videoWidget)
-        layout.addLayout(controlLayout)
+        self.layout = QVBoxLayout()
+        self.layout.setContentsMargins(0, 0, 0, 0)
+        self.layout.addWidget(self.videoWidget)
+        self.layout.addLayout(self.controlLayout)
         
         # adds channels list to the right
-        self.mainLayout.addLayout(layout)
+        self.mainLayout.addLayout(self.layout)
         self.mainLayout.addWidget(self.channelList)
 
         self.setLayout(self.mainLayout)
@@ -105,9 +105,12 @@ class VideoPlayer(QWidget):
         self.shortcut.activated.connect(self.handleQuit)
         self.shortcut = QShortcut(QKeySequence("u"), self)
         self.shortcut.activated.connect(self.playFromURL)
-        QShortcut(QKeySequence(Qt.Key_Space), self.videoWidget, self.play)
-        QShortcut(QKeySequence(Qt.Key_F), self.videoWidget, self.handleFullscreen)
-        QShortcut(QKeySequence(Qt.Key_Escape), self.videoWidget, self.exitFullscreen)
+        self.shortcut = QShortcut(QKeySequence(Qt.Key_Space), self)
+        self.shortcut.activated.connect(self.play)
+        self.shortcut = QShortcut(QKeySequence(Qt.Key_F), self)
+        self.shortcut.activated.connect(self.handleFullscreen)
+        self.shortcut = QShortcut(QKeySequence(Qt.Key_Escape), self)
+        self.shortcut.activated.connect(self.exitFullscreen)
         self.shortcut.activated.connect(self.handleFullscreen)
         self.shortcut = QShortcut(QKeySequence("i"), self)
         self.shortcut.activated.connect(self.handleInfo)
@@ -183,12 +186,12 @@ class VideoPlayer(QWidget):
     def contextMenuRequested(self, point):
         menu = QMenu()
         actionURL = menu.addAction(QIcon.fromTheme("browser"), "URL from Clipboard (u)")
-        actionclipboard = menu.addSeparator()
+        menu.addSeparator()
         actionToggle = menu.addAction(QIcon.fromTheme("next"), "Show / Hide Channels (s)")
         actionFull = menu.addAction(QIcon.fromTheme("view-fullscreen"), "Fullscreen (f)")
-        actionSep = menu.addSeparator()
+        menu.addSeparator()
         actionInfo = menu.addAction(QIcon.fromTheme("help-about"), "About (i)")
-        action5 = menu.addSeparator()
+        menu.addSeparator()
         actionQuit = menu.addAction(QIcon.fromTheme("application-exit"), "Exit (q)")
 
         actionQuit.triggered.connect(self.handleQuit)
@@ -217,7 +220,7 @@ class VideoPlayer(QWidget):
         self.showNormal()
 
     def handleInfo(self):
-        msg = QMessageBox.about(self, "About", self.myinfo)
+        QMessageBox.about(self, "About", self.myinfo)
 
     def toggleSlider(self):
         if self.positionSlider.isVisible():
@@ -386,8 +389,8 @@ if __name__ == '__main__':
     player.setAcceptDrops(True)
     player.setWindowTitle("TIVOpy")
     player.setWindowIcon(QIcon.fromTheme("multimedia-video-player"))
-    # player.setGeometry(100, 300, 1366, 768)
-    player.setGeometry(50, 50, 640, 480)
+    player.setGeometry(100, 300, 1366, 768)
+    # player.setGeometry(50, 50, 640, 480)
     player.setContextMenuPolicy(Qt.CustomContextMenu)
     player.customContextMenuRequested[QPoint].connect(player.contextMenuRequested)
     player.show()
